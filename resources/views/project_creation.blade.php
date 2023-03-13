@@ -19,6 +19,7 @@
 <hr>
 
  <h5><strong>Project Creation</strong></h5>
+ <h1>Venkataramana</h1>
  
 <br><br>
 <form action="{{url('/project_insert')}}" method="post">
@@ -63,12 +64,12 @@
     </div>
     
     <div class="col-md-12 mt-3">
-        <label for="project_code">Discription</label>
-        <textarea name="discription" id="discription" class="form-control" cols="30"
-            rows="5">{{old('discription')}}</textarea>
-        @if ($errors->has('discription'))
+        <label for="project_code">Description</label>
+        <textarea name="description" id="description" class="form-control" cols="30"
+            rows="5">{{old('description')}}</textarea>
+        @if ($errors->has('description'))
         <span class="mb-0 ml-2 text-danger" role="alert">
-            <p>{{ $errors->first('discription') }}.</p>
+            <p>{{ $errors->first('description') }}.</p>
         </span>
         @endif
     </div>
@@ -87,7 +88,7 @@
             <th>Select the Client</th>
             <th>Project Name</th>
             <th>Project Code</th>
-            <th>Discription</th>
+            <th>Description</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -103,7 +104,7 @@
             <td>{{$name->company_name}}</td>
             <td>{{$name->project_name}}</td>
             <td>{{$name->project_code}}</td>
-            <td>{{$name->discription}}</td>
+            <td>{{$name->description}}</td>
             <td width="5%">
              <div class="d-flex justify-content-between">
                  <a href="{{url('/project_edit')}}/{{$name->id}}" class=""> <i class="fa-solid fa-eye"></i> </a>

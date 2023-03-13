@@ -27,14 +27,14 @@ class project_creation_controller extends Controller
                 'select_client' => 'required',
                 'project_name' => 'required',
                 'project_code' => 'required',
-                'discription' => 'required',
+                'description' => 'required',
             ]);
 
         DB::table('create_project')->insert([
             'select_client' => $request->select_client,
             'project_name' => $request->project_name,
             'project_code' => $request->project_code,
-            'discription' => $request->discription,
+            'description' => $request->description,
 
         ]);
         return back()->with('success', 'inserted successfully');

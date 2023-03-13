@@ -30,9 +30,9 @@
         </div>
     </div>
     <br><br>
-    <h5>discription</h5>
-    <textarea name="discription" id="discription" class="form-control" cols="30"
-        rows="5">{{$data->discription}}</textarea>
+    <h5>description</h5>
+    <textarea name="description" id="description" class="form-control" cols="30"
+        rows="5">{{$data->description}}</textarea>
 
     <br>
     <div class="col-md-2 mb-2 ms-auto">
