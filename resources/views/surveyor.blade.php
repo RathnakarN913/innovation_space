@@ -39,7 +39,7 @@
         @csrf
         
         <h5><strong>Surveyor Creation</strong></h5>
-        
+        <h1>sushmitha</h1>
         
         <div class="row mt-4 m-0">
             
@@ -181,7 +181,7 @@
                         <td>{{$serve->state_name}}</td>
                         <td>{{$serve->pincode}}</td>
                         <td>{{$serve->age}}</td>
-                        <td>{{$serve->gender}}</td>
+                        <td>{{$serve->gender_id}}</td>
                         <td>{{$serve->file}}</td>
                         <td>{{$serve->remarks}}</td>
                         <td>
