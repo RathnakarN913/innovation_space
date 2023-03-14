@@ -39,7 +39,7 @@
         @csrf
         
         <h5><strong>Surveyor Creation</strong></h5>
-        <h1>sushmitha</h1>
+        
         
         <div class="row mt-4 m-0">
             
@@ -74,7 +74,7 @@
                 <label for="">Country</label>
                 <select name="country" id="country" class="form-control  select2" value="{{old('country')}}"
                     onchange="changestate()">
-                    <option value="">-Select-</option>
+                    <option value="">--Select country--</option>
                     @foreach($country as $count)
                     <option value="{{$count->id}}">{{$count->country_name}}</option>
                     @endforeach
@@ -83,9 +83,9 @@
             </div>
 
         <div class="col-md-4">
-                <label for="">State</label>
+                <label for="">State</label><br>
                 <select name="state" id="state" class="form-control select2" value="{{old('state')}}">
-                    <option value="">-Select-</option>
+                    <option value="">--Select state--</option>
                     @foreach($state as $serve)
                     <option value="{{$serve->id}}">{{$serve->state_name}}</option>
                     @endforeach
@@ -101,8 +101,8 @@
                     onkeydown="if(event.key==='.'){event.preventDefault();}">
                 @error('pincode') <div class="text-danger">{{ $message }}</div> @enderror
             </div>
-
         </div>
+
 
         <div class="row mt-3 m-0">
             <div class="col-md-4">
@@ -116,22 +116,59 @@
 
             <div class="col-md-4">
                 <label for="">Gender</label>
-                <input type="text" name="gender" id="" class="form-control" value="{{old('gender')}}">
+                <select name="gender_id" id=""class="form-control"value="{{old('gender')}}">
+                    <option value="">-select-gender-</option>
+                    @foreach($gender as $key)
+                    <option value="{{$key->id}}" >{{$key->gender}}</option>
+                 @endforeach
+                </select>
                 @error('gender') <div class="text-danger">{{ $message }}</div> @enderror
             </div>
 
            <div class="col-md-4">
-                <label for="">Upload addhar document or any proof</label>
+                <label for="">Upload Aadhar or Bank passbook or Cross cheque and Biodata</label>
                 <input type="file" name="file" id="" class="form-control" value="{{old('file')}}">
                 @error('file') <div class="text-danger">{{ $message }}</div> @enderror
+            </div>
+        </div>
+
+        <div class="row mt-3 m-0">
+        <div class="col-md-4">
+         <label for="">BankName</label>
+        <select name="bankname_id" id="banks" class="form-control " value="{{old('bankname_id')}}" onchange="getcode()">
+            <option value="">--select-BankName--</option>
+                    @foreach($bank as $bank)
+                <option value="{{$bank->id}}">{{$bank->bankname}}</option>
+                 @endforeach
+                </select>
+                @error('bankname') <div class="text-danger">{{ $message }}</div> @enderror
+            </div>
+
+
+            <div class="col-md-4">
+                <label for="">IFSC Code</label>
+              <select name="ifsc_id" id="ifsc"class="form-control">
+           <option value="">--select ifsc--</option>
+              </select>
+             
+                @error('ifsc') <div class="text-danger">{{ $message }}</div> @enderror
+            </div>
+
+           <div class="col-md-4">
+                <label for="">AccountNumber</label>
+                <input type="text" name="accountnumber" id="" class="form-control" value="{{old('accountnumber')}}">
+                @error('accountnumber') <div class="text-danger">{{ $message }}</div> @enderror
             </div>
 
         </div>
 
+
+
+
  <div class="row mb-3 mt-3 m-0">
      <div class="col-md-12">
             <label for="">Remarks</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" name="remarks"></textarea>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" name="remarks">{{old('remarks')}}</textarea>
             @error('remarks') <div class="text-danger">{{ $message }}</div> @enderror
        </div>     
  </div>
@@ -162,6 +199,9 @@
                         <th>Age</th>
                         <th>Gender</th>
                         <th>File</th>
+                        <th>BankName</th>
+                        <th>IFSC</th>
+                        <th>AccountNumber</th>
                         <th>Remarks</th>
                         <th>Action</th>
                     </tr>
@@ -181,8 +221,11 @@
                         <td>{{$serve->state_name}}</td>
                         <td>{{$serve->pincode}}</td>
                         <td>{{$serve->age}}</td>
-                        <td>{{$serve->gender_id}}</td>
+                        <td>{{$serve->gender}}</td>
                         <td>{{$serve->file}}</td>
+                        <td>{{$serve->bankname}}</td>
+                        <td>{{$serve->ifsc}}</td>
+                        <td>{{$serve->accountnumber}}</td>
                         <td>{{$serve->remarks}}</td>
                         <td>
                             
@@ -241,6 +284,36 @@
     </script>
 
 
- 
+<script>
+    function getcode(){
+        var bank_id =$('#banks').val();
+
+
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: 'POST',
+            url: "{{ url('/get_ifsc') }}",
+            data: {
+                'bankid':bank_id
+            },
+            DataType: 'json',
+
+            
+            success:function(res) {
+                console.log(res);
+                $('#ifsc').html(res);
+            }
+        }); 
+    }
+    </script>
+
+
+
+
+
+
+
 
     @endsection

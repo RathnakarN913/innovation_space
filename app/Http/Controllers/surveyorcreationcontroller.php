@@ -6,33 +6,41 @@ use App\Models\state;
 use App\Models\country;
 use App\Models\mappingserveyor;
 use App\Models\users;
-use App\Models\SurveyMst;
-use App\Models\CreateProject; 
 use App\Models\User;
+use App\Models\banks;
+use App\Models\ifsc;
+use App\Models\gender;
+
 use Illuminate\Http\Request;
 use DB;
 use Session;
 use Image;
 class surveyorcreationcontroller extends Controller
 {
-    
+  
 public function surveyor()
-{
+{        $bank=banks::all();
+          $ifsc=ifsc::all();
+          $gender=gender::all();
          $state=state::all();
          $country=country::all();
          $data=DB::table('surveyor')
                ->join('countries', 'surveyor.country', '=', 'countries.id')
                ->join('states', 'surveyor.state', '=', 'states.id')
-               ->select('countries.country_name', 'states.state_name','surveyor.*')
+               ->join('banknames', 'surveyor.bankname_id', '=', 'banknames.id')
+               ->join('ifsc', 'surveyor.ifsc_id', '=', 'ifsc.id')
+               ->join('gender', 'surveyor.gender_id', '=', 'gender.id')
+               ->select('countries.country_name', 'states.state_name','banknames.bankname','ifsc.ifsc','gender.gender','surveyor.*')
                ->get(); 
-
- return view('surveyor',compact('state','country','data'));
+//dd($data);
+ return view('surveyor',compact('state','country','data','bank','ifsc','gender'));
 
 }
 
 public function insert_serveyor(Request $request){
-
+   //  dd($request->all());
     $this->validate($request,[
+     
             'name'=>'required',
             'mobilenumber'=>'required|unique:surveyor',
             'emailid'=>'required|unique:surveyor',
@@ -40,12 +48,15 @@ public function insert_serveyor(Request $request){
             'country'=>'required',
             'pincode'=>'required',
             'age'=>'required',
-            'gender'=>'required',
+            'gender_id'=>'required',
             'file'=>'required',
+            'bankname_id'=>'required',
+            'ifsc_id'=>'required',
+            'accountnumber'=>'required',
             'remarks'=>'required',
 
           ]);
-    
+      
           $name=$request->name;
           $mobilenumber=$request->mobilenumber;
           $emailid=$request->emailid;
@@ -53,13 +64,18 @@ public function insert_serveyor(Request $request){
           $country=$request->country;
           $pincode=$request->pincode;
           $age=$request->age;
-          $gender=$request->gender;
+          $gender=$request->gender_id;
 
+         
          
          $file=$request->file('file');
          //dd($file);
          $filename=$file->getClientOriginalName();
          $file->move(base_path('/public/images'),$filename);
+
+         $bankname=$request->bankname_id;
+         $ifsc=$request->ifsc_id;
+         $accountnumber=$request->accountnumber;
 
           $remarks=$request->remarks;
                
@@ -71,9 +87,13 @@ public function insert_serveyor(Request $request){
                      'country'=>$country,
                      'pincode'=>$pincode,
                      'age'=>$age,
-                     'gender'=>$gender,
+                     'gender_id'=>$gender,
                      'file'=>$filename,
+                     'bankname_id'=>$bankname,
+                     'ifsc_id'=> $ifsc,
+                     'accountnumber'=>$accountnumber,
                      'remarks'=>$remarks,
+                    
                      ]);
        return back()->with('success', 'data inserted successfully');
        }
@@ -98,16 +118,19 @@ public function insert_serveyor(Request $request){
                      $data=surveyor::where('id',$id)->first();
                      $state=state::all();
                      $country=country::all();
+                     $bank=banks::all();
+                     $ifsc=ifsc::all();
+                   $gender=gender::all();
 // dd($data);
-         return view('surveyoredit',compact('data','country','state'));
+         return view('surveyoredit',compact('data','country','state','bank','ifsc','gender'));
          
          
          }
          
          public function surveyordelete(Request $request){
                  surveyor::where('id',$request->id)->delete();
-                 
-         return back();
+
+     return back()->with('success','record deleted successfully');
          
          }
          
@@ -121,13 +144,18 @@ public function insert_serveyor(Request $request){
                    $country=$request->country;
                    $pincode=$request->pincode;
                    $age=$request->age;
-                   $gender=$request->gender;
+                   $gender=$request->gender_id;
                    $file=$request->file('file');
                    //dd($file);
                    $filename=$file->getClientOriginalName();
                   $file->move(base_path('/public/images'),$filename);
                   
-                            $remarks=$request->remarks;
+
+                
+                  $bankname=$request->bankname_id;
+                  $ifsc=$request->ifsc_id;
+                  $accountnumber=$request->accountnumber;
+                  $remarks=$request->remarks;
                       
                
           $class = surveyor::where('id',$request->userid)->update([
@@ -139,11 +167,15 @@ public function insert_serveyor(Request $request){
                      'country'=>$country,
                      'pincode'=>$pincode,
                      'age'=>$age,
-                     'gender'=>$gender,
+                     'gender_id'=>$gender,
                      'file'=>$filename,
+                     'bankname_id'=>$bankname,
+                     'ifsc_id'=> $ifsc,
+                     'accountnumber'=>$accountnumber,
                      'remarks'=>$remarks,
                ]);
-         
+             
+              
          return back()->with('success','updated successfully');
           }
 
@@ -179,13 +211,22 @@ public function insert_serveyor(Request $request){
             'state'=>'required',
             'project_id'=>'required',
             'surveyors'=>'required',
-       
+            'city'=>'required',
+            'fieldoffice'=>'required',
+            'workcenter'=>'required',
+            'address'=>'required',
+      
          ]);
       
                $country=$request->country;
                $state=$request->state;
                $project=$request->project_id;
                $surveyor=$request->surveyors;
+               $city=$request->city;
+               $fieldoffice=$request->fieldoffice;
+               $workcenter=$request->workcenter;
+               $address=$request->address;
+
          $survyorcount= mappingserveyor::where('project_id',$project)->count();
          if( $survyorcount>0){
             mappingserveyor::where('project_id',$project)->delete();
@@ -197,6 +238,11 @@ public function insert_serveyor(Request $request){
                      'state_id'=>$state,
                      'project_id'=>$project,
                   'surveyor_id'=>$surveyor[$key],
+                  'city'=>$city,
+                  'fieldoffice'=>$fieldoffice,
+                  'workcenter'=>$workcenter,
+                  'address'=>$address,
+
             ]);   
            }
          return back()->with('success', 'data inserted successfully');
@@ -230,33 +276,22 @@ public function insert_serveyor(Request $request){
                }
                
                }
-               
-    public function surveyor_reports()
-   {
-      $data['surveyor']= surveyor::get();
-
-      return view('surveyor_reports',$data);
-   }
-
-   public function surveyor_reports_filters(Request $request)
-   { 
-      $data['surveyor']= surveyor::get();
-      $data['sur_name']= surveyor::where('id', $request->serveyer_id)->first();
-      // return $data;
-      return view('surveyor_reports_filter', $data);
-      
-   }
-
-   public function surveyed_records_details($id)
-   {
-
-      $projectids= mappingserveyor::where('surveyor_id','=',$id)->pluck('project_id');
-      $projects= CreateProject::whereIn('id',$projectids)->get();
-      $servyedRecords = SurveyMst::where('surveyor_id','=',$id)->get();
-
-     
-      return view('surveyed_records_details', compact('servyedRecords','projects'));
-   }           
    
- }
+
+
+               public function getifsc(Request $request){
+               
+                  $bank=$request->bankid;
+                  // dd($bank);
+                  $ifsc= DB::table('ifsc')->where('bank_id','=',$bank)->get();
+               //   dd($ifsc);
+                  $html="<option value=''>--Select ifsc--</option>";
   
+            foreach($ifsc as $item){
+               echo  $html .="<option value=".$item->id.">".$item->ifsc."</option>";
+
+          
+
+            }
+ }
+}

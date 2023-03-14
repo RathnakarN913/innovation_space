@@ -12,14 +12,14 @@
 <hr>
  
   <h5><strong>Mapping the surveyor to the project</strong></h5>
-     
+      
 
 <form action="{{url('/mappingsurveyor_insert')}}" method="post">
         @csrf
         <div class="row mt-5">
             <div class="col-md-4">
                 <label for="">Country</label>
-                <select name="country" id="country" class="form-select" onchange="changestate()" value="{{old('country')}}">
+                <select name="country" id="country" class="form-control select2" onchange="changestate()" value="{{old('country')}}">
                     <option value="">-Select-</option>
                     @foreach($country as $count)
                         <option value="{{ $count->id }}">{{ $count->country_name }}</option>
@@ -30,7 +30,7 @@
 
             <div class="col-md-4">
                 <label for="">State</label>
-                <select name="state" id="state" class="form-select" value="{{old('state')}}">
+                <select name="state" id="state" class="form-control select2" value="{{old('state')}}">
                     <option value="">-Select-</option>
                     @foreach($state as $serve)
                         <option value="{{$serve->id}}">{{$serve->state_name}}</option>
@@ -41,7 +41,7 @@
 
             <div class="col-md-4 mb-4">
                 <label for="">Select the Project</label>
-                <select name="project_id" id="project" class="form-select" value="{{old('project_id')}}" onchange="changeproject()">
+                <select name="project_id" id="project" class="form-control select2" value="{{old('project_id')}}" onchange="changeproject()">
                 
                     <option value="">-Select-</option>
                     @foreach($users as $project)
@@ -51,9 +51,43 @@
                 @error('project_id') <div class="text-danger">{{ $message }}</div> @enderror
             </div>
         </div>
+
+
+
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <label for="">City</label>
+                <input type="text" name="city" id=""class="form-control"value="{{old('city')}}">
+                @error('city') <div class="text-danger">{{ $message }}</div> @enderror
+            </div>
+
+            <div class="col-md-4">
+                <label for="">FiledOffice</label>
+               <input type="text" name="fieldoffice" id=""class="form-control"value="{{old('fieldoffice')}}">
+                @error('fieldoffice') <div class="text-danger">{{ $message }}</div> @enderror
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <label for="">Work Center</label>
+                <input type="text" name="workcenter" id=""class="form-control"value="{{old('workcenter')}}" >
+                @error('workcenter') <div class="text-danger">{{ $message }}</div> @enderror
+            </div>
+        </div>
+
+
+
+        <div class="row mb-3 mt-3 m-0">
+     <div class="col-md-12">
+            <label for="">Address</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" name="address">{{old('address')}}</textarea>
+            @error('address') <div class="text-danger">{{ $message }}</div> @enderror
+       </div>     
+ </div>
+
+
+
+
 <div class="serveyors"></div>
-     
- 
 <div class="text-end mt-3">
     <span><button class="btn btn-success" type="submit">Submit</button></span>
 </div>
@@ -69,6 +103,10 @@
                     <th>State</th>
                     <th>Project Name</th>
                     <th>Surveyors</th>
+                    <th>city</th>
+                    <th>fieldoffice</th>
+                    <th>workcenter</th>
+                    <th>address</th>
                     <th>Action</th>
                     
                 </tr>
@@ -76,7 +114,7 @@
 
             <tbody>
                 @php
-                    $s=1;
+                $s=1;
                 @endphp
                 <tr>
                     @foreach($main_data as $store)
@@ -85,8 +123,13 @@
                     <td>{{$store->state_name}}</td>
                     <td>{{$store->project_name}}</td>
                     <td>{!!$store->name!!}</td>
+                 <td>{{$store->city}}</td>
+                 <td>{{$store->fieldoffice}}</td>
+                 <td>{{$store->workcenter}}</td>
+                 <td>{{$store->address}}</td>
                     <td width="5%">
-                        <a href="#" class="text-danger"><i class="fa-solid fa-trash"></i></a>
+
+                    <a href="" class="text-danger"><i class="fa-solid fa-trash"></i></a>
                     </td>
                   </tr>
                 @endforeach
@@ -164,6 +207,11 @@ $(document).ready(function(){
 
 
 
+<script>
+    $(document).ready(function() {
+        $('.select2').select2();
+    });
+    </script>
 
 
 

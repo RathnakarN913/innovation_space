@@ -42,15 +42,10 @@ Route::post('/surveyor',[surveyorcreationcontroller::class,'changestate'])->midd
 Route::get('/surveyoredit/{id}',[surveyorcreationcontroller::class,'surveyoredit'])->middleware(['auth']);
 Route::get('/surveyordelete/{id}',[surveyorcreationcontroller::class,'surveyordelete'])->middleware(['auth']);
 Route::post('updatesurveyor',[surveyorcreationcontroller::class,'updatesurveyor'])->middleware(['auth']);
+Route::post('/get_ifsc',[surveyorcreationcontroller::class,'getifsc'])->middleware(['auth']);
 
 
 Route::get('/mappingsurveyor',[surveyorcreationcontroller::class,'mappingsurveyor'])->middleware(['auth']);
 Route::post('/mappingsurveyor_insert',[surveyorcreationcontroller::class,'mappingsurveyor_insert'])->middleware(['auth']);
 Route::post('/mapping_surveyor',[surveyorcreationcontroller::class,'changeproject'])->middleware(['auth']);
-
-
-Route::get('/surveyor/reports',[surveyorcreationcontroller::class,'surveyor_reports'])->middleware(['auth']);
-Route::post('/surveyor/reports/filter',[surveyorcreationcontroller::class,'surveyor_reports_filters'])->middleware(['auth']);
-Route::get('surveyed-records-details/{id}', [surveyorcreationcontroller::class, 'surveyed_records_details'])->name('surveyed_records_details');
-
 require __DIR__.'/auth.php';
